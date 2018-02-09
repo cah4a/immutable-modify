@@ -1,0 +1,21 @@
+# IDE
+.idea
+
+# Artifacts
+coverage
+
+# Logs
+*.log
+npm-debug.log*
+
+# Dependency directory
+# https://docs.npmjs.com/misc/faq#should-i-check-my-node-modules-folder-into-git
+node_modules
+
+# Build directory
+lib/
+
+# Environment variables ignored by default to prevent
+# accidentally leaking private keys.
+.env
+.envrc
