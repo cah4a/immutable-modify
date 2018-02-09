@@ -1,6 +1,6 @@
 {
   "name": "immutable-modify",
-  "version": "0.1.0",
+  "version": "0.1.2",
   "description": "Modify structures in react/redux compatible way",
   "main": "lib/index.js",
   "types": "index.d.ts",
