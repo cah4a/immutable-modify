@@ -19,3 +19,8 @@ export function merge(
     keyPath: KeyPath,
     item: Object
 ): Something;
+
+export function remove(
+    object: Something,
+    keyPath: KeyPath
+): Something;

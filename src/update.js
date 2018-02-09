@@ -11,10 +11,6 @@ function clone(obj) {
 }
 
 export default function update(obj, path, updater) {
-    if (!Array.isArray(path)) {
-        path = ('' + path).split('.')
-    }
-
     if (path.length === 0) {
         return obj
     }

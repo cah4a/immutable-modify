@@ -1,4 +1,4 @@
-import {set, push, merge} from '../src/index.js'
+import {set, push, merge, remove} from '../src/index.js'
 
 describe('set fn', () => {
     it('sets', () => {
@@ -119,7 +119,7 @@ describe('push fn', () => {
 })
 
 describe('merge fn', () => {
-    it('merge', () => {
+    it('merges', () => {
         const o = {foo: {a: {}}, bar: {}}
         const u = merge(o, 'foo', {b: 2})
 
@@ -129,7 +129,7 @@ describe('merge fn', () => {
         expect(u.foo.a).toBe(o.foo.a)
     })
 
-    it('set on merge', () => {
+    it('sets on merge', () => {
         const o = {bar: {}}
         const u = merge(o, 'foo', {b: 2})
 
@@ -147,6 +147,47 @@ describe('merge fn', () => {
     it('error on merge to not object', () => {
         expect(() => {
             merge({foo: 3}, 'foo', {})
+        }).toThrow();
+    })
+})
+
+describe('remove fn', () => {
+    it('removes', () => {
+        const o = {foo: {bar: 1, baz: 2}}
+        const u = remove(o, 'foo.bar')
+
+        expect(u).toEqual({foo: {baz: 2}})
+        expect(u).not.toBe(o)
+        expect(u.foo).not.toBe(o.foo)
+        expect(u.foo.baz).toBe(o.foo.baz)
+    })
+
+    it('removes first level', () => {
+        const o = {foo: {bar: 1, baz: 2}}
+        const u = remove(o, 'foo')
+
+        expect(u).toEqual({})
+        expect(u).not.toBe(o)
+    })
+
+    it('removes from array', () => {
+        const o = {foo: [0, 1, 2]}
+        const u = remove(o, 'foo.0')
+
+        expect(u).toEqual({foo: [1, 2]})
+        expect(u).not.toBe(o)
+        expect(u.foo).not.toBe(o.foo)
+    })
+
+    it('error on path is not exists', () => {
+        expect(() => {
+            remove({bar: {baz: 1}}, 'foo.bar')
+        }).toThrow();
+    })
+
+    it('error on path is not array or object', () => {
+        expect(() => {
+            remove({foo: 3}, 'foo.bar')
         }).toThrow();
     })
 })

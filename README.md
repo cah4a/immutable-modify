@@ -101,6 +101,20 @@ newState.product === state.product // false
 newState.product.name === state.product.name // true
 ```
 
+### remove(object, path)
+
+```javascript
+import {remove} from 'immutable-modify'
+
+const state = {product: {name: 'sepulka', isAvailable: true}}
+
+const newState = remove(state, 'product.isAvailable')
+// newState is now {product: {name: 'sepulka'}}
+
+newState === state // false
+newState.product === state.product // false
+```
+
 ## Test
 
 ```
