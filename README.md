@@ -69,6 +69,26 @@ newState.user === state.user // false
 newState.settings === state.settings // true
 ```
 
+#### Attention!
+
+That updater function should return *new reference*, otherwise nothing will updated:
+
+```javascript
+import {set} from 'immutable-modify'
+
+const state = {user: {name: 'Skywalker', isJedi: false}, settings: {}}
+
+const newState = set(state, 'user', user => {
+    user.isJedi = true 
+    return user
+})
+// newState is still {user: {name: 'Skywalker', isJedi: false}}
+
+newState === state // true
+newState.user === state.user // true
+newState.settings === state.settings // true
+```
+
 ### push(object, path, item)
 
 ```javascript

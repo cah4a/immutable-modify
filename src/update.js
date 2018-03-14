@@ -10,11 +10,23 @@ function clone(obj) {
     throw `Can't rewrite scalars`
 }
 
-export default function update(obj, path, updater) {
-    if (path.length === 0) {
-        return obj
+function get(obj, path) {
+    let iteratee = clone(obj)
+
+    while (path.length > 1) {
+        const key = path.shift()
+
+        if (!iteratee.hasOwnProperty(key)) {
+            return {}
+        }
+
+        iteratee = iteratee[key]
     }
 
+    return iteratee[path.shift()]
+}
+
+function set(obj, path, value) {
     let iteratee = clone(obj)
     const result = iteratee
 
@@ -24,8 +36,23 @@ export default function update(obj, path, updater) {
     }
 
     const key = path.shift()
-
-    iteratee[key] = updater(iteratee[key])
+    iteratee[key] = value
 
     return result
+}
+
+export default function update(obj, path, updater) {
+    if (path.length === 0) {
+        return obj
+    }
+
+    const oldValue = get(obj, clone(path))
+    const newValue = updater(oldValue)
+
+    if (newValue === oldValue) {
+        // nothing was changed, return old object
+        return obj
+    }
+
+    return set(obj, clone(path), newValue)
 }

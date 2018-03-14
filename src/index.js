@@ -25,6 +25,14 @@ export function push(obj, path, item) {
 export function merge(obj, path, item) {
     return update(obj, makePath(path), value => {
         if (value instanceof Object || value === undefined) {
+            const hasNoUpdates = value && Object.keys(item).every(
+                key => value[key] === item[key],
+            )
+
+            if (hasNoUpdates) {
+                return value
+            }
+
             return Object.assign({}, value, item)
         }
 
@@ -39,10 +47,18 @@ export function remove(obj, path) {
 
     const doRemove = value => {
         if (Array.isArray(value)) {
+            if (value.length <= key) {
+                return value
+            }
+
             return value.slice(0, key).concat(value.slice(key + 1))
         }
 
         if (value instanceof Object) {
+            if (!value.hasOwnProperty(key)) {
+                return value
+            }
+
             const result = Object.assign({}, value)
             delete result[key]
             return result

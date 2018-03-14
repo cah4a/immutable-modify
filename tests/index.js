@@ -9,12 +9,28 @@ describe('set fn', () => {
         expect(u).not.toBe(o)
     })
 
+    it('do nothing when sets old value', () => {
+        const o = {a: 1}
+        const u = set(o, 'a', 1)
+
+        expect(u).toEqual({a: 1})
+        expect(u).toBe(o)
+    })
+
     it('work with arrays', () => {
         const o = [1, 2]
         const u = set(o, o.length, 3)
 
         expect(u).toEqual([1, 2, 3])
         expect(u).not.toBe(o)
+    })
+
+    it('do nothing when sets old value in array', () => {
+        const o = [1, 2]
+        const u = set(o, 1, 2)
+
+        expect(u).toEqual([1, 2])
+        expect(u).toBe(o)
     })
 
     it('creates elements', () => {
@@ -114,7 +130,7 @@ describe('push fn', () => {
     it('error on push to not array', () => {
         expect(() => {
             push({foo: 3}, 'foo', 4)
-        }).toThrow();
+        }).toThrow()
     })
 })
 
@@ -125,6 +141,16 @@ describe('merge fn', () => {
 
         expect(u).toEqual({foo: {a: {}, b: 2}, bar: {}})
         expect(u.foo).not.toBe(o.foo)
+        expect(u.bar).toBe(o.bar)
+        expect(u.foo.a).toBe(o.foo.a)
+    })
+
+    it('do nothing when merge not change object', () => {
+        const o = {foo: {a: {}, b: 2}, bar: {}}
+        const u = merge(o, 'foo', {b: 2})
+
+        expect(u).toEqual({foo: {a: {}, b: 2}, bar: {}})
+        expect(u.foo).toBe(o.foo)
         expect(u.bar).toBe(o.bar)
         expect(u.foo.a).toBe(o.foo.a)
     })
@@ -141,13 +167,13 @@ describe('merge fn', () => {
     it('error on scalar update', () => {
         expect(() => {
             merge({foo: 3}, ['foo', 'bar'], {b: 2})
-        }).toThrow();
+        }).toThrow()
     })
 
     it('error on merge to not object', () => {
         expect(() => {
             merge({foo: 3}, 'foo', {})
-        }).toThrow();
+        }).toThrow()
     })
 })
 
@@ -162,6 +188,17 @@ describe('remove fn', () => {
         expect(u.foo.baz).toBe(o.foo.baz)
     })
 
+    it('do nothing while key is not exists', () => {
+        const o = {foo: {bar: 1, baz: 2}}
+        const u = remove(o, 'foo.boo')
+
+        expect(u).toEqual({foo: {bar: 1, baz: 2}})
+        expect(u).toBe(o)
+        expect(u.foo).toBe(o.foo)
+        expect(u.foo.baz).toBe(o.foo.baz)
+        expect(u.foo.bar).toBe(o.foo.bar)
+    })
+
     it('removes first level', () => {
         const o = {foo: {bar: 1, baz: 2}}
         const u = remove(o, 'foo')
@@ -171,23 +208,32 @@ describe('remove fn', () => {
     })
 
     it('removes from array', () => {
-        const o = {foo: [0, 1, 2]}
+        const o = {foo: ['a', 'b', 'c']}
         const u = remove(o, 'foo.0')
 
-        expect(u).toEqual({foo: [1, 2]})
+        expect(u).toEqual({foo: ['b', 'c']})
         expect(u).not.toBe(o)
         expect(u.foo).not.toBe(o.foo)
+    })
+
+    it('do nothing while item in array is not exists', () => {
+        const o = {foo: [0, 1, 2]}
+        const u = remove(o, 'foo.3')
+
+        expect(u).toEqual({foo: [0, 1, 2]})
+        expect(u).toBe(o)
+        expect(u.foo).toBe(o.foo)
     })
 
     it('error on path is not exists', () => {
         expect(() => {
             remove({bar: {baz: 1}}, 'foo.bar')
-        }).toThrow();
+        }).toThrow()
     })
 
     it('error on path is not array or object', () => {
         expect(() => {
             remove({foo: 3}, 'foo.bar')
-        }).toThrow();
+        }).toThrow()
     })
 })
